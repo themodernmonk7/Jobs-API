@@ -6,16 +6,16 @@ const app = express()
 
 const connectDB = require('./db/connect')
 // Routers
-const userRouter = require('./routes/userRoute')
-const notFoundMiddleware = require('./middleware/not-found')
-const errorHandlerMiddleware = require('./middleware/error-handler')
+const authRoutes = require("./routes/authRoutes")
+const notFoundMiddleware = require("./middleware/not-found")
+const errorHandlerMiddleware = require("./middleware/error-handler")
 app.use(express.json())
 
-app.get('/', (req, res) => {
-    res.send('<h1>Jobs API</h1><a href="/api-docs">Documentation</a>')
+app.get("/", (req, res) => {
+  res.send('<h1>Jobs API</h1><a href="/api-docs">Documentation</a>')
 })
 
-app.use('/api/v1/auth', userRouter)
+app.use("/api/v1/auth", authRoutes)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
