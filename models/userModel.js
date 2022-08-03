@@ -25,15 +25,19 @@ const UserSchema = new mongoose.Schema({
     },
 })
 
+// Hashing the password before saving into the database
 UserSchema.pre('save', async function () {
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
 })
 
+// Create JWT using instance methods on Schema 
 UserSchema.methods.createToken = function () {
     return jwt.sign({userId: this._id, name: this.name}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_LIFETIME})
 }
 
+// Compare the hashed password
+// Password that coming with request = canditatePassword
 UserSchema.methods.comparePassword = async function (canditatePassword) {
     const isMatch = await bcrypt.compare(canditatePassword, this.password)
     return isMatch
