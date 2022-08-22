@@ -1,3 +1,7 @@
+const { StatusCodes } = require("http-status-codes")
+const { BadRequestError } = require("../errors")
+const Job = require("../models/jobModel")
+
 //* ========================= GET ALL JOBS ========================= */
 const getAllJobs = async (req, res) => {
   res.send("Get all jobs")
@@ -10,14 +14,20 @@ const getSingleJob = async (req, res) => {
 
 //* ========================= CREATE JOB ========================= */
 const createJob = async (req, res) => {
-  res.send("Create job")
+  req.body.createdBy = req.user.userId
+
+  // Extra validation
+  const { company, position, status } = req.body
+  if (!company || !position || !status) {
+    throw new BadRequestError("Please provide all values")
+  }
+
+  const job = await Job.create(req.body)
+  res.status(StatusCodes.CREATED).json({ job })
 }
 
 //* ========================= UPDATE JOB ========================= */
-const updateJob = async (req, res) => {
-  res.send("Update job")
-}
-
+const updateJob = async (req, res) => res.send("Update job")
 //* ========================= DELETE JOB ========================= */
 const deleteJob = async (req, res) => {
   res.send("Delete job")
