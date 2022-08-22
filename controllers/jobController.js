@@ -1,6 +1,5 @@
 const { StatusCodes } = require("http-status-codes")
 const { BadRequestError, NotFoundError } = require("../errors")
-const { findOne } = require("../models/jobModel")
 const Job = require("../models/jobModel")
 
 //* ========================= GET ALL JOBS ========================= */
@@ -62,7 +61,16 @@ const updateJob = async (req, res) => {
 
 //* ========================= DELETE JOB ========================= */
 const deleteJob = async (req, res) => {
-  res.send("Delete job")
+  const {
+    user: { userId },
+    params: { id: jobId },
+  } = req
+
+  const job = await Job.findByIdAndRemove({ _id: jobId, createdBy: userId })
+  if (!job) {
+    throw new NotFoundError(`No job with id ${jobId}`)
+  }
+  res.status(StatusCodes.OK).send()
 }
 
 module.exports = {
