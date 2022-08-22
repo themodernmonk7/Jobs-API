@@ -4,7 +4,9 @@ const Job = require("../models/jobModel")
 
 //* ========================= GET ALL JOBS ========================= */
 const getAllJobs = async (req, res) => {
-  res.send("Get all jobs")
+  // TODO: Sort on the basis of last created job
+  const jobs = await Job.find({ createdBy: req.user.userId }).sort("createdAt")
+  res.status(StatusCodes.OK).json({ total_jobs: jobs.length, jobs })
 }
 
 //* ========================= GET SINGLE JOB ========================= */
